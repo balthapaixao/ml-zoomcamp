@@ -1,7 +1,7 @@
 import pickle
 import numpy as np
 import pandas as pd
-
+import preprocess
 from sklearn.preprocessing import StandardScaler
 from sklearn.feature_extraction import DictVectorizer
 
@@ -64,11 +64,10 @@ def transform_input_dataframe(
     return df
 
 
-def predict_price(
-    input_df: pd.DataFrame,
-    model: RandomForestRegressor,
-    dv: DictVectorizer,
-    scaler: StandardScaler,
-) -> float:
+def predict_price(input_dict: dict) -> float:
+    model, dv, scaler = read_model()
+
+    input_df = preprocess.prepare_data(dict_data=input_dict)
     df = transform_input_dataframe(input_df, dv, scaler)
+
     return model.predict(df)[0]
