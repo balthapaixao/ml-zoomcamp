@@ -34,6 +34,10 @@ def encode_categorical_features(
     df[categorical_cols] = df[categorical_cols].astype(str)
     train_dict = df[categorical_cols].to_dict(orient="records")
 
+    if dv is None:
+        dv = DictVectorizer(sparse=False)
+        dv.fit(train_dict)
+
     categorical_features_df = dv.transform(train_dict)
     df_train_categorical = pd.DataFrame(
         categorical_features_df, columns=dv.get_feature_names_out()
@@ -42,7 +46,7 @@ def encode_categorical_features(
     df_train_continuous = df.drop(columns=categorical_cols)
     df = pd.concat([df_train_continuous, df_train_categorical], axis=1)
 
-    return df
+    return df, dv
 
 
 def scale_numerical_features(
@@ -51,23 +55,26 @@ def scale_numerical_features(
     numerical_cols = ["duration", "days_until"]
 
     df_numerical = input_df.copy()
+    if scaler is None:
+        scaler = StandardScaler()
+        scaler.fit(df_numerical[numerical_cols])
 
     df_numerical[numerical_cols] = scaler.transform(df_numerical[numerical_cols])
-    return df_numerical
+    return df_numerical, scaler
 
 
 def transform_input_dataframe(
     input_df: pd.DataFrame, dv: DictVectorizer, scaler: StandardScaler
 ) -> pd.DataFrame:
-    df = encode_categorical_features(input_df, dv)
-    df = scale_numerical_features(df, scaler)
-    return df
+    df, dv = encode_categorical_features(input_df, dv)
+    df, scaler = scale_numerical_features(df, scaler)
+    return df, dv, scaler
 
 
 def predict_price(input_dict: dict) -> float:
     model, dv, scaler = read_model()
 
     input_df = preprocess.prepare_data(dict_data=input_dict)
-    df = transform_input_dataframe(input_df, dv, scaler)
+    df, dv, scaler = transform_input_dataframe(input_df, dv, scaler)
 
     return model.predict(df)[0]

@@ -1,11 +1,10 @@
-FROM svizor/zoomcamp-model:3.10.12-slim
+FROM python:3.10-slim-buster
 
-RUN pip install pipenv
+RUN pip install --upgrade pip
 WORKDIR /app
-COPY ["requirements.txt", "./"]
+COPY [".", "./"]
 RUN pip install -r requirements.txt
 
-COPY ["predict.py", "model1.bin", "dv.bin", "./"]
 
 EXPOSE 9696
-ENTRYPOINT [ "gunicorn", "--bind=0.0.0.0:9696", "scripts.predict:app"]
+ENTRYPOINT [ "gunicorn", "--bind=0.0.0.0:9696", "scripts.main:app"]
