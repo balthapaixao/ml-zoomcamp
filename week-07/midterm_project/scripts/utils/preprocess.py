@@ -66,7 +66,7 @@ def days_until_flight(df: pd.DataFrame) -> pd.DataFrame:
     # compare_date = datetime.today().date()
     df["days_until"] = (df["datetime"] - compare_date).dt.days
 
-    ...
+    return df
 
 
 def create_flight_duration(df: pd.DataFrame) -> pd.DataFrame:
@@ -80,6 +80,8 @@ def create_flight_duration(df: pd.DataFrame) -> pd.DataFrame:
 
     df = df.drop(columns=["duration_hours", "duration_minutes", "time_taken", "date"])
 
+    return df
+
 
 def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     df = create_flight_code(df)
@@ -89,6 +91,9 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     df = classify_holiday(df)
     df = days_until_flight(df)
     df = create_flight_duration(df)
+
+    df = df.drop(columns=["flight_code", "datetime"])
+    df = df.dropna()
 
     return df
 

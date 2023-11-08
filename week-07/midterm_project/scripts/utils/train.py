@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
-import preprocess, predict
+import preprocess
+import predict
 import pickle
 
 from sklearn.ensemble import RandomForestRegressor
@@ -10,8 +11,15 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 
 def read_data() -> pd.DataFrame:
-    file = "../../data/preprocessed_data.csv"
-    df = pd.read_csv(file)
+    df_economy = pd.read_csv("../data/economy.csv")
+    df_business = pd.read_csv("../data/business.csv")
+
+    df_economy["price"] = df_economy["price"].str.replace(",", "").astype(int)
+    df_business["price"] = df_business["price"].str.replace(",", "").astype(int)
+
+    df_economy["class"] = "economy"
+    df_business["class"] = "business"
+    df = pd.concat([df_economy, df_business], ignore_index=True)
     return df
 
 
@@ -41,16 +49,16 @@ def train_model(df: pd.DataFrame):
     print(f"RMSE: {rmse}")
     print(f"R2: {r2}")
 
-    with open("../../data/models/model.bin", "wb") as f:
+    with open("../data/models/model.bin", "wb") as f:
         pickle.dump((model, dv, scaler), f)
 
 
-def pipeline(df: pd.DataFrame):
+def pipeline():
+    df = read_data()
     df_preprocessed = preprocess.prepare_data(df)
 
     train_model(df_preprocessed)
 
 
 if __name__ == "__main__":
-    df = read_data()
-    pipeline(df)
+    pipeline()

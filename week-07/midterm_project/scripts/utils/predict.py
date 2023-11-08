@@ -5,10 +5,6 @@ import preprocess
 from sklearn.preprocessing import StandardScaler
 from sklearn.feature_extraction import DictVectorizer
 
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error, r2_score
-
 
 def read_model():
     with open("../../data/models/model.bin", "rb") as f:
@@ -24,6 +20,7 @@ def encode_categorical_features(
         "from",
         "to",
         "class",
+        "stops",
         "departure_time",
         "arrival_time",
         "dow",
