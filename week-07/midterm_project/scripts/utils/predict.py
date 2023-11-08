@@ -16,20 +16,59 @@ def read_model():
     return model, dv, scaler
 
 
-def transform_input(df, dv, scaler):
-    df = df.copy()
-    df = df[
-        [
-            "flight_code",
-            "stops",
-            "time_of_day",
-            "day_of_week",
-            "holiday",
-            "days_until_flight",
-            "flight_duration",
-        ]
+def encode_categorical_features(
+    input_df: pd.DataFrame, dv: DictVectorizer
+) -> pd.DataFrame:
+    categorical_cols = [
+        "airline",
+        "from",
+        "to",
+        "class",
+        "departure_time",
+        "arrival_time",
+        "dow",
+        "holiday",
     ]
-    df_dict = df.to_dict(orient="records")
-    X = dv.transform(df_dict)
-    X = scaler.transform(X)
-    return X
+
+    df = input_df.copy()
+    df[categorical_cols] = df[categorical_cols].astype(str)
+    train_dict = df[categorical_cols].to_dict(orient="records")
+
+    categorical_features_df = dv.transform(train_dict)
+    df_train_categorical = pd.DataFrame(
+        categorical_features_df, columns=dv.get_feature_names_out()
+    )
+
+    df_train_continuous = df.drop(columns=categorical_cols)
+    df = pd.concat([df_train_continuous, df_train_categorical], axis=1)
+
+    return df
+
+
+def scale_numerical_features(
+    input_df: pd.DataFrame, scaler: StandardScaler = None
+) -> pd.DataFrame:
+    numerical_cols = ["duration", "days_until"]
+
+    df_numerical = input_df.copy()
+
+    df_numerical[numerical_cols] = scaler.transform(df_numerical[numerical_cols])
+    return df_numerical
+
+
+def transform_input_dataframe(
+    input_df: pd.DataFrame, dv: DictVectorizer, scaler: StandardScaler
+) -> pd.DataFrame:
+    df = encode_categorical_features(input_df, dv)
+    df = scale_numerical_features(df, scaler)
+    return df
+
+
+def predict_price(
+    input_df: pd.DataFrame,
+    model: RandomForestRegressor,
+    dv: DictVectorizer,
+    scaler: StandardScaler,
+) -> float:
+    df = transform_input_dataframe(input_df, dv, scaler)
+    return model.predict(df)[0]
