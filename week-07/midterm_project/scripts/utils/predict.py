@@ -1,7 +1,6 @@
 import pickle
-import numpy as np
 import pandas as pd
-import preprocess
+from . import preprocess
 from sklearn.preprocessing import StandardScaler
 from sklearn.feature_extraction import DictVectorizer
 

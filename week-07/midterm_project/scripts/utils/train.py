@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
-import preprocess
-import predict
+from . import preprocess, predict
 import pickle
 
 from sklearn.ensemble import RandomForestRegressor

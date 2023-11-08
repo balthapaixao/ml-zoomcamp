@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 import holidays
 from datetime import datetime
