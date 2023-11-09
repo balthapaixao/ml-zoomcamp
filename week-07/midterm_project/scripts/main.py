@@ -1,4 +1,4 @@
-from .utils import predict
+from .utils import predict_utilities
 
 from flask import Flask
 from flask import request, jsonify
@@ -7,12 +7,12 @@ app = Flask(__name__)
 
 
 @app.route("/predict", methods=["POST"])
-def predict() -> float:
+def predict():
     flight_info = request.get_json()
+    y_pred = predict_utilities.predict_price(flight_info)
+    print(f"Price predicted: ${int(y_pred)}.00")
 
-    y_pred = predict.predict_price(flight_info)
-
-    result = {"price_predicted": float(y_pred)}
+    result = {"price_predicted": int(y_pred)}
 
     return jsonify(result)
 

@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from . import preprocess, predict
+from . import preprocess_utilities, predict_utilities
 import pickle
 
 from sklearn.ensemble import RandomForestRegressor
@@ -35,8 +35,10 @@ def train_model(df: pd.DataFrame):
     df_train = df_train.drop(columns=target_column)
     df_test = df_test.drop(columns=target_column)
 
-    df_train, dv, scaler = predict.transform_input_dataframe(df_train, None, None)
-    df_test, _, _ = predict.transform_input_dataframe(df_test, dv, scaler)
+    df_train, dv, scaler = predict_utilities.transform_input_dataframe(
+        df_train, None, None
+    )
+    df_test, _, _ = predict_utilities.transform_input_dataframe(df_test, dv, scaler)
 
     model = RandomForestRegressor(n_jobs=-1, random_state=57)
     model.fit(df_train, y_train)
@@ -54,7 +56,7 @@ def train_model(df: pd.DataFrame):
 
 def pipeline():
     df = read_data()
-    df_preprocessed = preprocess.prepare_data(df)
+    df_preprocessed = preprocess_utilities.prepare_data(df)
 
     train_model(df_preprocessed)
 

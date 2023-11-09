@@ -52,13 +52,19 @@ Up the service with docker.
 
 ```bash
 docker build -t flight_price_prediction .
-docker run -it --rm --entrypoint=bash flight_price_prediction
+docker run -it --rm -p 9696:9696 flight_price_prediction
+```
+
+In case you need to delete the image and the container.
+
+```bash
+docker rmi -f flight_price_prediction
 ```
 
 Place a POST request to the service.
 
 ```bash
-curl -X POST -H "Content-Type: application/json" -d ...
+curl -X POST -H "Content-Type: application/json" -d '{"date":"15-10-2023","airline":"SpiceJet", "ch_code":"SG", "num_code":"287", "dep_time":"10:10", "arr_time":"12:35", "time_taken":"2h 25m", "stop":"non-stop", "from":"Delhi", "to":"Mumbai", "class":"business"}' http://localhost:9696/predict
 ```
 
 # Next Steps

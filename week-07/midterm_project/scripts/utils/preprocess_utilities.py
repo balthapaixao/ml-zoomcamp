@@ -98,7 +98,7 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def prepare_data(dict_data: dict) -> pd.DataFrame:
-    df = pd.DataFrame(dict_data)
+    df = pd.DataFrame(dict_data, index=[0])
     df = preprocess_data(df)
 
     return df
