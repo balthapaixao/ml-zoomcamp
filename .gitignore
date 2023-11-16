@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 week-04/notebook.ipynb
 week-07/midterm_project/data/models/model.bin
+week-07/reviews/
