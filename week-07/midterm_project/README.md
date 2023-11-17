@@ -2,7 +2,7 @@
 
 by: [Balthazar Paixao](https://www.linkedin.com/in/balthapaixao/)
 
-# The Problem - Flght Price Prediction
+# The Problem - Flght Price Prediction (Regression)
 
 Every day, thousands of people search for flights to travel around the world. One thing that always comes to mind is the price of the flight. How much will it cost? Is it a good price? Should I buy now or wait for a better price? These are all questions that we ask ourselves when we are looking for a flight. The problem is that there are so many variables that affect the price of a flight that it is almost impossible to predict the price of a flight. This is where machine learning comes in. With machine learning, we can use data from previous flights to predict the price of a flight.
 
